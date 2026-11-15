@@ -7,10 +7,10 @@
 // ============================================================
 
 window.FIREBASE_CONFIG = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyCsRDwiiRPgjVVeyMT6GUizQKMBy5DGENI",
+  authDomain: "class-bank-b6766.firebaseapp.com",
+  projectId: "class-bank-b6766",
+  storageBucket: "class-bank-b6766.firebasestorage.app",
+  messagingSenderId: "872679925698",
+  appId: "1:872679925698:web:0be155ebe816f99205585b"
 };
