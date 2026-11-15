@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#43A66C">
+  <title>一班銀行・教師端</title>
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="teacher">
+  <header class="topbar">
+    <div class="wrap topbar-row">
+      <div class="brand"><span id="logo"></span><span class="brand-name">一班銀行</span><span class="brand-tag">教師端</span></div>
+      <a class="pill-link" href="index.html">回學生端</a>
+    </div>
+  </header>
+
+  <!-- 密碼 -->
+  <main class="wrap" id="lockView">
+    <form class="lock-box clay" id="lockForm" novalidate>
+      <span class="lock-ic" id="lockIc"></span>
+      <label for="pwd">輸入教師密碼</label>
+      <input id="pwd" type="password" inputmode="numeric" autocomplete="off" maxlength="8" autofocus>
+      <p class="pin-error" id="pwdError" role="alert"></p>
+      <button class="btn btn-primary wide" type="submit">進入教師端</button>
+    </form>
+  </main>
+
+  <main class="wrap" id="appView" hidden>
+    <nav class="tabs" role="tablist" aria-label="教師端功能">
+      <button role="tab" data-tab="ops" aria-selected="true"><span data-ic="sparkle"></span>加減鱷魚卡</button>
+      <button role="tab" data-tab="overview" aria-selected="false"><span data-ic="chart"></span>全班餘額</button>
+      <button role="tab" data-tab="cards" aria-selected="false"><span data-ic="card"></span>銀行卡管理</button>
+      <button role="tab" data-tab="log" aria-selected="false"><span data-ic="list"></span>紀錄與備份</button>
+    </nav>
+    <p id="demoNote" class="note" hidden>目前是試用模式：資料只存在這台裝置。照「設定步驟」貼上 Firebase 設定後，就會改用雲端資料庫。</p>
+
+    <!-- 加減鱷魚卡 -->
+    <section data-panel="ops">
+      <div class="ops-grid">
+        <div class="clay panel pick-panel">
+          <div class="panel-head">
+            <h2>選擇學生 <span class="count" id="selCount">已選 0 人</span></h2>
+            <div class="row-btns">
+              <button type="button" class="btn btn-soft sm" id="selAll">全選</button>
+              <button type="button" class="btn btn-soft sm" id="selNone">清除</button>
+            </div>
+          </div>
+          <div class="pick-grid" id="pickGrid"></div>
+        </div>
+
+        <div class="ops-side">
+          <div class="clay panel">
+            <h2><span class="h-ic green" data-ic="plus"></span>新增鱷魚卡</h2>
+            <div class="give-row t-blue">
+              <span class="give-label"><span data-ic="star"></span>幹部</span>
+              <div class="give-btns"><button type="button" class="chip" data-give="幹部" data-n="1">+1</button></div>
+            </div>
+            <div class="give-row t-green">
+              <span class="give-label"><span data-ic="hand"></span>協助幫忙</span>
+              <div class="give-btns">
+                <button type="button" class="chip" data-give="協助幫忙" data-n="1">+1</button>
+                <button type="button" class="chip" data-give="協助幫忙" data-n="2">+2</button>
+                <button type="button" class="chip" data-give="協助幫忙" data-n="3">+3</button>
+              </div>
+            </div>
+            <div class="give-row t-yellow">
+              <span class="give-label"><span data-ic="sparkle"></span>其他</span>
+              <div class="give-btns">
+                <button type="button" class="chip" data-give="其他" data-n="1">+1</button>
+                <button type="button" class="chip" data-give="其他" data-n="2">+2</button>
+                <button type="button" class="chip" data-give="其他" data-n="3">+3</button>
+              </div>
+            </div>
+            <label class="field-lbl" for="otherNote">「其他」的說明（選填）</label>
+            <input type="text" id="otherNote" class="field" placeholder="例如：作業全對">
+          </div>
+
+          <div class="clay panel">
+            <h2><span class="h-ic red" data-ic="minus"></span>扣除鱷魚卡</h2>
+            <form id="deductForm" class="deduct-form">
+              <label class="field-lbl" for="deductReason">理由</label>
+              <input type="text" id="deductReason" class="field" placeholder="例如：忘記帶作業" required>
+              <label class="field-lbl" for="deductN">扣幾張</label>
+              <div class="deduct-row">
+                <input type="number" id="deductN" class="field" min="0.01" step="0.01" placeholder="張數" required>
+                <button type="submit" class="btn btn-red">扣除</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="clay panel">
+            <h2><span class="h-ic blue" data-ic="dice"></span>今日抽卡</h2>
+            <form id="drawForm" class="deduct-row">
+              <input type="number" id="drawPrice" class="field" min="0" step="0.01" placeholder="抽一次幾張" aria-label="今日抽卡金額">
+              <button type="submit" class="btn btn-soft">公布</button>
+            </form>
+            <p class="hint" id="drawStatus"></p>
+            <button type="button" class="btn btn-primary wide" id="drawCharge">幫選到的同學抽卡扣款</button>
+          </div>
+
+          <div class="clay panel interest">
+            <h2><span class="h-ic yellow" data-ic="sprout"></span>每週利息</h2>
+            <p class="hint" id="interestStatus">全班餘額增加 5%，保留到小數第二位。</p>
+            <button type="button" class="btn btn-gold wide" id="interestBtn">發放本週利息 +5%</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 全班餘額 -->
+    <section data-panel="overview" hidden>
+      <div class="stats" id="stats"></div>
+      <div class="clay panel">
+        <div class="panel-head">
+          <h2>全班餘額</h2>
+          <label class="sort-lbl">排序
+            <select id="sortSel" class="field sm">
+              <option value="seat">依座號</option>
+              <option value="desc">餘額多到少</option>
+              <option value="asc">餘額少到多</option>
+            </select>
+          </label>
+        </div>
+        <div class="table-wrap">
+          <table class="ledger">
+            <thead><tr><th>座號</th><th>姓名</th><th>卡號</th><th>圖案</th><th class="bar-cell"></th><th class="num">餘額（張）</th></tr></thead>
+            <tbody id="overviewBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 銀行卡管理 -->
+    <section data-panel="cards" hidden>
+      <div class="ops-grid">
+        <div class="clay panel">
+          <h2 id="cardFormTitle">新增銀行卡</h2>
+          <form id="cardForm" class="card-form">
+            <label>座號<input type="number" id="cfSeat" class="field" min="1" required></label>
+            <label>持有人姓名<input type="text" id="cfName" class="field" required></label>
+            <label>卡號（8 碼）<input type="text" id="cfNo" class="field" inputmode="numeric" pattern="\d{8}" maxlength="8" required></label>
+            <label>餘額（張）<input type="number" id="cfBal" class="field" min="0" step="0.01" value="0"></label>
+            <fieldset class="design-pick" id="cfDesign"><legend>卡片圖案</legend></fieldset>
+            <div class="row-btns">
+              <button type="submit" class="btn btn-primary" id="cfSubmit">新增銀行卡</button>
+              <button type="button" class="btn btn-soft" id="cfCancel" hidden>取消修改</button>
+            </div>
+            <p class="hint" id="cfHint">卡號建立後不能修改；若打錯，請刪除後重新新增。</p>
+          </form>
+        </div>
+        <div class="clay panel">
+          <div class="panel-head">
+            <h2>全班銀行卡</h2>
+            <button type="button" class="btn btn-soft sm" id="importRoster">匯入班級名單</button>
+          </div>
+          <ul class="card-rows" id="cardRows"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 紀錄與備份 -->
+    <section data-panel="log" hidden>
+      <div class="clay panel">
+        <div class="panel-head">
+          <h2>最近的紀錄</h2>
+          <div class="row-btns">
+            <button type="button" class="btn btn-red sm" id="undoBtn"><span data-ic="undo"></span>復原上一筆操作</button>
+            <button type="button" class="btn btn-soft sm" id="exportBal"><span data-ic="download"></span>匯出全班餘額</button>
+            <button type="button" class="btn btn-soft sm" id="exportTx"><span data-ic="download"></span>匯出所有紀錄</button>
+          </div>
+        </div>
+        <p class="hint">匯出的 CSV 檔可以直接用 Excel 或 Google 試算表打開，建議每個月備份一次。</p>
+        <div class="table-wrap">
+          <table class="ledger">
+            <thead><tr><th>時間</th><th>學生</th><th>摘要</th><th class="num">張數</th><th class="num">餘額</th></tr></thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/teacher.js"></script>
+</body>
+</html>

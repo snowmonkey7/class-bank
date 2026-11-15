@@ -1,0 +1,9 @@
+rules_version = '2';
+// 一班銀行・簡單版規則：任何人都能讀寫（教師端只用密碼 0424 保護）
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
